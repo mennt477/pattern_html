@@ -1,0 +1,118 @@
+@charset "utf-8";
+@import "compass";
+$experimental-support-for-svg: true;
+
+$columnWidth: 1200px;
+/*------ Media query ------*/
+
+/* xxl: 1400px ; $xl: 1200px; $lg: 992px;  $md: 768px; $sm: 576px;*/
+@mixin mq($device, $breakpoint, $breakpoint2: null){
+  // min-width
+  @if($device == xxl){
+    @media only screen and (min-width: $xxl) {  @content; }
+  }@else if($device == xl) {
+    @media only screen and (min-width: $xl) {  @content; }
+  }@else if($device == lg) {
+    @media only screen and (min-width: $lg) {  @content; }
+  }@else if($device == md) {
+    @media only screen and (min-width: $md) {  @content; }
+  }@else if($device == sm) {
+    @media only screen and (min-width: $sm) {  @content; }
+
+  //max-width
+  } @else if $device == max_xs {
+    @media only screen and (max-width: ($sm - 1px)) { @content; }
+  }@else if $device == max_sm {
+    @media only screen and (max-width: ($md - 1px)) { @content; }
+  }@else if $device == max_md {
+    @media only screen and (max-width: ($lg - 1px)) { @content; }
+  }@else if $device == max_lg {
+    @media only screen and (max-width: ($xl - 1px)) { @content; }
+  }@else if $device == max_xl {
+    @media only screen and (max-width: ($xxl - 1px)) { @content; }
+
+  //other
+  }@else if $device = min_w {
+    @media only screen and (min-width: $breakpoint) { @content; }
+  }@else if $device = max_w {
+    @media only screen and (max-width: $breakpoint) { @content; }
+  }@else if $device = min_max_w {
+    @media only screen and (min-width: $breakpoint) and (max-width: $breakpoint2) { @content; }
+
+  // height
+  } @else if $device == min_h {
+    @media only screen and (min-height: $breakpoint) { @content; }
+  } @else if $device == max_h {
+    @media only screen and (max-height: $breakpoint) { @content; }
+  } @else if $device == min_max_h {
+    @media only screen and (min-height: $breakpoint) and (max-height: $breakpoint2) { @content; }
+  }
+}
+
+/*------ clearFix ------*/
+%cf {
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+}
+
+//----------------------------------------------//
+// *Function									//
+//----------------------------------------------//
+@function wCon($width,$parentWidth:$columnWidth) {
+	@return $width / $parentWidth * 100%;
+}
+
+/*------ hover ------*/
+@mixin hover() {
+	.mouse &:hover,
+	.touch &.touchstart {
+		@content;
+	}
+	.touch & {
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		&.touchend {
+			@include transition-delay(200ms);
+		}
+	}
+}
+/*------ cV ------*/
+@mixin cV($pro, $v1:0, $v2:0, $v3:null) {
+	#{$pro} : $v1;/* min-width: 1200px */
+	@if $v3 == null {
+		@include mq(max_sm) {
+			#{$pro} : $v2;
+		}
+	}@else {
+		@include mq(max_lg) {/* max-width: 1199px */
+			#{$pro} : $v2;
+		}
+		@include mq(max_sm) {/* max-width: 767px */
+			#{$pro} : $v3;
+		}
+	}
+}
+
+/*------ zoomImg ------*/
+@mixin zoomImg($mag:140%,$cri:center) {
+	overflow: hidden;
+	img {
+		position: relative;
+		width: $mag;
+		max-width: none;
+		@if $cri == center {
+			margin-left: - ($mag - 100) / 2;
+		}
+		@if $cri == right {
+			margin-left: - ($mag - 100);
+		}
+	}
+}
+
+/*------ linear-gradient ------*/
+@mixin gradient($c1:#000, $c2:#fff) {
+	@include background(linear-gradient($c1,$c2));
+	@include filter-gradient($c1,$c2);
+}
